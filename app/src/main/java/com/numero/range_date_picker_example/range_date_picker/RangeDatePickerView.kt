@@ -1,26 +1,30 @@
-package com.numero.range_date_picker_example
+package com.numero.range_date_picker_example.range_date_picker
 
-import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.v7.app.AppCompatActivity
-import android.view.Menu
-import android.view.MenuItem
+import android.content.Context
+import android.support.v7.widget.LinearLayoutManager
+import android.util.AttributeSet
+import android.view.View
+import android.widget.LinearLayout
+import com.numero.range_date_picker_example.R
 import com.numero.range_date_picker_example.range_date_picker.model.Day
 import com.numero.range_date_picker_example.range_date_picker.model.Month
 import com.numero.range_date_picker_example.range_date_picker.model.RangeState
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.view_range_date_picker.view.*
 import java.util.*
 
-class MainActivity : AppCompatActivity() {
+class RangeDatePickerView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearLayout(context, attrs, defStyleAttr) {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        setSupportActionBar(toolbar)
+    init {
+        View.inflate(context, R.layout.view_range_date_picker, this)
+        val current = Calendar.getInstance()
 
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
+        val month = Month(2018, 5, current.time, "5")
+
+        val monthAdapter = MonthAdapter(month, getMonthCells(month, current))
+
+        monthRecyclerView.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = monthAdapter
         }
     }
 
@@ -68,17 +72,5 @@ class MainActivity : AppCompatActivity() {
             }
         }
         return cells
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_settings -> true
-            else -> super.onOptionsItemSelected(item)
-        }
     }
 }
