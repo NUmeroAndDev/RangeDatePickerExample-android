@@ -10,4 +10,9 @@ class WeekView @JvmOverloads constructor(context: Context, attrs: AttributeSet? 
     init {
         View.inflate(context, R.layout.view_week, this)
     }
+
+    fun getDayView(weekPosition: Int): DayView {
+        val parentView = getChildAt(0) as? LinearLayout ?: throw Exception("Not find parent view")
+        return parentView.getChildAt(weekPosition) as DayView
+    }
 }

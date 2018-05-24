@@ -2,7 +2,7 @@ package com.numero.range_date_picker_example.range_date_picker.model
 
 import java.util.*
 
-data class MonthCell(
+data class Day(
         val date: Date,
         val isCurrentMonth: Boolean,
         val isSelectable: Boolean,
