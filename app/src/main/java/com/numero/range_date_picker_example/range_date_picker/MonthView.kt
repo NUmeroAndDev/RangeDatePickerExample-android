@@ -32,7 +32,7 @@ class MonthView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                 weekView.visibility = View.VISIBLE
                 dayList[i].forEachIndexed { index, day ->
                     val cellView = weekView.getDayView(index)
-                    cellView.day = day
+                    cellView.setupDay(day)
                 }
             } else {
                 weekView.visibility = View.GONE

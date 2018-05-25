@@ -1,6 +1,7 @@
 package com.numero.range_date_picker_example.range_date_picker
 
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,6 +26,7 @@ class MonthAdapter(private val monthMap: LinkedHashMap<Month, List<List<Day>>>, 
         val month = monthMap.keys.toList()[position]
         val monthList = monthMap[month] ?: return
         holder.setUpMonthView(month, monthList, onDayClickListener)
+        Log.d("Log", "create")
     }
 
     class MonthViewHolder(override val containerView: View?) : RecyclerView.ViewHolder(containerView), LayoutContainer {
