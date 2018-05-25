@@ -8,6 +8,8 @@ import android.widget.LinearLayout
 import com.numero.range_date_picker_example.R
 import com.numero.range_date_picker_example.extension.checkInRange
 import com.numero.range_date_picker_example.extension.cutTime
+import com.numero.range_date_picker_example.extension.isFirstDay
+import com.numero.range_date_picker_example.extension.isLastDay
 import com.numero.range_date_picker_example.range_date_picker.model.Day
 import com.numero.range_date_picker_example.range_date_picker.model.Month
 import com.numero.range_date_picker_example.range_date_picker.model.RangeState
@@ -150,10 +152,24 @@ class RangeDatePickerView @JvmOverloads constructor(context: Context, attrs: Att
 
         if (selectedDayList.size > 1) {
             // Select all days in between start and end.
-            val start = selectedDayList[0].date
-            val end = selectedDayList[1].date
-            selectedDayList[0].rangeState = RangeState.FIRST
-            selectedDayList[1].rangeState = RangeState.LAST
+            val start = Calendar.getInstance().apply {
+                time = selectedDayList[0].date
+                cutTime()
+            }
+            val end = Calendar.getInstance().apply {
+                time = selectedDayList[1].date
+                cutTime()
+            }
+            // 最初が月の最後の場合、丸アイコンにする
+            selectedDayList[0].rangeState = when {
+                start.isLastDay() -> RangeState.FIRST_AND_LAST
+                else -> RangeState.FIRST
+            }
+            // 最後が月の最初の場合、丸アイコンにする
+            selectedDayList[1].rangeState = when {
+                end.isFirstDay() -> RangeState.FIRST_AND_LAST
+                else -> RangeState.LAST
+            }
 
             val startMonthIndex = monthMap.keys.indexOfFirst {
                 val c = Calendar.getInstance().apply {
@@ -172,9 +188,16 @@ class RangeDatePickerView @JvmOverloads constructor(context: Context, attrs: Att
                 val dayList = monthMap[month] ?: listOf()
                 for (week in dayList) {
                     for (day in week) {
-                        if (day.date.after(start) and day.date.before(end) and day.isSelectable) {
+                        val dayCalendar = Calendar.getInstance().apply {
+                            time = day.date
+                        }
+                        if (dayCalendar.after(start) and dayCalendar.before(end) and day.isSelectable) {
                             day.isSelected = true
-                            day.rangeState = RangeState.MIDDLE
+                            day.rangeState = when {
+                                dayCalendar.isLastDay() -> RangeState.LAST
+                                dayCalendar.isFirstDay() -> RangeState.FIRST
+                                else -> RangeState.MIDDLE
+                            }
                             selectedDayList.add(day)
                         }
                     }

@@ -16,6 +16,15 @@ fun Calendar.sameDate(calendar: Calendar): Boolean {
     return get(Calendar.YEAR) == year && get(Calendar.MONTH) == month && get(Calendar.DAY_OF_MONTH) == day
 }
 
+fun Calendar.isFirstDay(): Boolean {
+    return get(Calendar.DAY_OF_MONTH) == 1
+}
+
+fun Calendar.isLastDay(): Boolean {
+    val last = getActualMaximum(Calendar.DAY_OF_MONTH)
+    return get(Calendar.DAY_OF_MONTH) == last
+}
+
 fun Calendar.cutTime(): Calendar {
     val year = get(Calendar.YEAR)
     val month = get(Calendar.MONTH)

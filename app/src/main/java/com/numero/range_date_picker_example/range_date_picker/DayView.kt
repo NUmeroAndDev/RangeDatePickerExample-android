@@ -36,6 +36,7 @@ class DayView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
             RangeState.FIRST -> setBackgroundResource(R.drawable.range_select_start)
             RangeState.LAST -> setBackgroundResource(R.drawable.range_select_last)
             RangeState.MIDDLE -> setBackgroundResource(R.drawable.range_select_middle)
+            RangeState.FIRST_AND_LAST -> setBackgroundResource(R.drawable.range_select_first)
             else -> {
                 if (day.isSelected) {
                     setBackgroundResource(R.drawable.range_select_first)
