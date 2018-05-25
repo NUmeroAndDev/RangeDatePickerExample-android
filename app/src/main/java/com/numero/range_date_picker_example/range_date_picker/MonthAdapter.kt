@@ -5,12 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.numero.range_date_picker_example.R
+import com.numero.range_date_picker_example.range_date_picker.`interface`.OnDayClickListener
 import com.numero.range_date_picker_example.range_date_picker.model.Day
 import com.numero.range_date_picker_example.range_date_picker.model.Month
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.view_holder_month.*
 
-class MonthAdapter(private val monthMap: LinkedHashMap<Month, List<List<Day>>>) : RecyclerView.Adapter<MonthAdapter.MonthViewHolder>() {
+class MonthAdapter(private val monthMap: LinkedHashMap<Month, List<List<Day>>>, private val onDayClickListener: OnDayClickListener) : RecyclerView.Adapter<MonthAdapter.MonthViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MonthViewHolder {
         return MonthViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.view_holder_month, parent, false))
@@ -23,14 +24,13 @@ class MonthAdapter(private val monthMap: LinkedHashMap<Month, List<List<Day>>>) 
     override fun onBindViewHolder(holder: MonthViewHolder, position: Int) {
         val month = monthMap.keys.toList()[position]
         val monthList = monthMap[month] ?: return
-        holder.setUpMonthView(month, monthList)
+        holder.setUpMonthView(month, monthList, onDayClickListener)
     }
-
 
     class MonthViewHolder(override val containerView: View?) : RecyclerView.ViewHolder(containerView), LayoutContainer {
 
-        fun setUpMonthView(month: Month, dayList: List<List<Day>>) {
-            monthView.setup(month, dayList)
+        fun setUpMonthView(month: Month, dayList: List<List<Day>>, listener: OnDayClickListener) {
+            monthView.setup(month, dayList, listener)
         }
 
     }

@@ -7,6 +7,7 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import com.numero.range_date_picker_example.R
 import com.numero.range_date_picker_example.extension.format
+import com.numero.range_date_picker_example.range_date_picker.`interface`.OnDayClickListener
 import com.numero.range_date_picker_example.range_date_picker.model.Day
 import com.numero.range_date_picker_example.range_date_picker.model.Month
 import kotlinx.android.synthetic.main.view_month.view.*
@@ -18,7 +19,7 @@ class MonthView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         View.inflate(context, R.layout.view_month, this)
     }
 
-    fun setup(month: Month, dayList: List<List<Day>>) {
+    fun setup(month: Month, dayList: List<List<Day>>, listener: OnDayClickListener) {
         monthLabelTextView.text = Calendar.getInstance().apply {
             time = month.date
         }.format("YYYY/MM")
@@ -26,11 +27,12 @@ class MonthView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         val numRows = dayList.size
         for (i in 0 until WEEK_COUNT) {
             val weekView = getWeekView(i + 2)
+            weekView.setOnDayClickListener(listener)
             if (i < numRows) {
                 weekView.visibility = View.VISIBLE
                 dayList[i].forEachIndexed { index, day ->
                     val cellView = weekView.getDayView(index)
-                    cellView.setDay(day)
+                    cellView.day = day
                 }
             } else {
                 weekView.visibility = View.GONE

@@ -3,6 +3,7 @@ package com.numero.range_date_picker_example.range_date_picker
 import android.content.Context
 import android.support.v7.widget.LinearLayoutManager
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
 import com.numero.range_date_picker_example.R
@@ -22,6 +23,11 @@ class RangeDatePickerView @JvmOverloads constructor(context: Context, attrs: Att
         add(Calendar.YEAR, 1)
     }
 
+    private val onDayClickListener: DayClickListener = DayClickListener(minDate, maxDate) {
+        // 選択処理
+        Log.d("Log", "Selected")
+    }
+
     init {
         View.inflate(context, R.layout.view_range_date_picker, this)
 
@@ -29,9 +35,10 @@ class RangeDatePickerView @JvmOverloads constructor(context: Context, attrs: Att
             add(Calendar.YEAR, 1)
             add(Calendar.MONTH, 1)
         }
+        onDayClickListener.updateRange(minDate, maxDate)
         createMonthList()
 
-        val monthAdapter = MonthAdapter(monthMap)
+        val monthAdapter = MonthAdapter(monthMap, onDayClickListener)
 
         monthRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)

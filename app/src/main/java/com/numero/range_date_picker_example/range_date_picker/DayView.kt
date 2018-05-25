@@ -10,12 +10,24 @@ import kotlinx.android.synthetic.main.view_day.view.*
 
 class DayView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr) {
 
+    private var listener: ((dayView: DayView) -> Unit)? = null
+
+    var day: Day? = null
+        set(value) {
+            value ?: return
+            field = value
+            dayTextView.text = value.value.toString()
+            dayTextView.isEnabled = value.isSelectable
+        }
+
     init {
         View.inflate(context, R.layout.view_day, this)
+        dayTextView.setOnClickListener {
+            listener?.invoke(this)
+        }
     }
 
-    fun setDay(day: Day) {
-        dayTextView.text = day.value.toString()
-        dayTextView.isEnabled = day.isSelectable
+    fun setOnDayClickListener(listener: ((dayView: DayView) -> Unit)) {
+        this.listener = listener
     }
 }
