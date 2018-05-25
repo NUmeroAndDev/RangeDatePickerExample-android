@@ -2,17 +2,22 @@ package com.numero.range_date_picker_example.range_date_picker
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.View
 import android.widget.LinearLayout
-import com.numero.range_date_picker_example.R
 
 class WeekView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearLayout(context, attrs, defStyleAttr) {
     init {
-        View.inflate(context, R.layout.view_week, this)
+        for (i in 0 until WEEK_HAS_DAY_COUNT) {
+            val dayView = DayView(context)
+            dayView.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, 1F)
+            addView(dayView)
+        }
     }
 
     fun getDayView(weekPosition: Int): DayView {
-        val parentView = getChildAt(0) as? LinearLayout ?: throw Exception("Not find parent view")
-        return parentView.getChildAt(weekPosition) as DayView
+        return getChildAt(weekPosition) as DayView
+    }
+
+    companion object {
+        private const val WEEK_HAS_DAY_COUNT = 7
     }
 }
