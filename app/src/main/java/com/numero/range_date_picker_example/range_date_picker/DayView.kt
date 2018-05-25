@@ -16,5 +16,6 @@ class DayView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
 
     fun setDay(day: Day) {
         dayTextView.text = day.value.toString()
+        dayTextView.isEnabled = day.isSelectable
     }
 }

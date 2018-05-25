@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
 import com.numero.range_date_picker_example.R
+import com.numero.range_date_picker_example.extension.checkInRange
 import com.numero.range_date_picker_example.range_date_picker.model.Day
 import com.numero.range_date_picker_example.range_date_picker.model.Month
 import com.numero.range_date_picker_example.range_date_picker.model.RangeState
@@ -16,15 +17,19 @@ import kotlin.collections.LinkedHashMap
 class RangeDatePickerView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearLayout(context, attrs, defStyleAttr) {
 
     private val monthMap: LinkedHashMap<Month, List<List<Day>>> = LinkedHashMap()
+    private var minDate: Calendar = Calendar.getInstance()
+    private var maxDate: Calendar = Calendar.getInstance().apply {
+        add(Calendar.YEAR, 1)
+    }
 
     init {
         View.inflate(context, R.layout.view_range_date_picker, this)
 
-        val calendar = Calendar.getInstance().apply {
+        maxDate = Calendar.getInstance().apply {
             add(Calendar.YEAR, 1)
             add(Calendar.MONTH, 1)
         }
-        createMonthList(maxDate = calendar)
+        createMonthList()
 
         val monthAdapter = MonthAdapter(monthMap)
 
@@ -34,7 +39,7 @@ class RangeDatePickerView @JvmOverloads constructor(context: Context, attrs: Att
         }
     }
 
-    private fun createMonthList(minDate: Calendar = Calendar.getInstance(), maxDate: Calendar) {
+    private fun createMonthList() {
         val calendar = Calendar.getInstance().apply {
             val minYear = minDate.get(Calendar.YEAR)
             val minMonth = minDate.get(Calendar.MONTH)
@@ -76,7 +81,7 @@ class RangeDatePickerView @JvmOverloads constructor(context: Context, attrs: Att
                 val date = cal.time
                 val isCurrentMonth = cal.get(Calendar.MONTH) == month.month
                 val isSelected = false
-                val isSelectable = true
+                val isSelectable = isCurrentMonth && cal.checkInRange(minDate, maxDate)
                 val isToday = false
                 val isHighlighted = false
                 val value = cal.get(Calendar.DAY_OF_MONTH)
