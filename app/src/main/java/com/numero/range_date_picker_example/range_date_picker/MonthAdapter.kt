@@ -10,18 +10,20 @@ import com.numero.range_date_picker_example.range_date_picker.model.Month
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.view_holder_month.*
 
-class MonthAdapter(private val month: Month, private val dayList: List<List<Day>>) : RecyclerView.Adapter<MonthAdapter.MonthViewHolder>() {
+class MonthAdapter(private val monthMap: LinkedHashMap<Month, List<List<Day>>>) : RecyclerView.Adapter<MonthAdapter.MonthViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MonthViewHolder {
         return MonthViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.view_holder_month, parent, false))
     }
 
     override fun getItemCount(): Int {
-        return 10
+        return monthMap.size
     }
 
     override fun onBindViewHolder(holder: MonthViewHolder, position: Int) {
-        holder.setUpMonthView(month, dayList)
+        val month = monthMap.keys.toList()[position]
+        val monthList = monthMap[month] ?: return
+        holder.setUpMonthView(month, monthList)
     }
 
 

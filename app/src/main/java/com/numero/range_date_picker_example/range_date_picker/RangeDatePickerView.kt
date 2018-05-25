@@ -6,25 +6,53 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
 import com.numero.range_date_picker_example.R
+import com.numero.range_date_picker_example.extension.format
 import com.numero.range_date_picker_example.range_date_picker.model.Day
 import com.numero.range_date_picker_example.range_date_picker.model.Month
 import com.numero.range_date_picker_example.range_date_picker.model.RangeState
 import kotlinx.android.synthetic.main.view_range_date_picker.view.*
 import java.util.*
+import kotlin.collections.LinkedHashMap
 
 class RangeDatePickerView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearLayout(context, attrs, defStyleAttr) {
+
+    private val monthMap: LinkedHashMap<Month, List<List<Day>>> = LinkedHashMap()
 
     init {
         View.inflate(context, R.layout.view_range_date_picker, this)
         val current = Calendar.getInstance()
 
-        val month = Month(2018, 5, current.time, "5")
+        val calendar = Calendar.getInstance().apply {
+            add(Calendar.YEAR, 1)
+            add(Calendar.MONTH, 1)
+        }
+        createMonthList(maxDate = calendar)
 
-        val monthAdapter = MonthAdapter(month, getMonthCells(month, current))
+        val monthAdapter = MonthAdapter(monthMap)
 
         monthRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = monthAdapter
+        }
+    }
+
+    private fun createMonthList(minDate: Calendar = Calendar.getInstance(), maxDate: Calendar) {
+        val calendar = Calendar.getInstance().apply {
+            val minYear = minDate.get(Calendar.YEAR)
+            val minMonth = minDate.get(Calendar.MONTH)
+            set(minYear, minMonth, 1)
+        }
+
+        val maxYear = maxDate.get(Calendar.YEAR)
+        val maxMonth = maxDate.get(Calendar.MONTH)
+        while ((calendar.get(Calendar.MONTH) <= maxMonth // Up to, including the month.
+                        || calendar.get(Calendar.YEAR) < maxYear) // Up to the year.
+                && calendar.get(Calendar.YEAR) < maxYear + 1) { // But not > next yr.
+            val date = calendar.time
+            val month = Month(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
+                    date, calendar.format("YYYY/MM"))
+            monthMap[month] = getMonthCells(month, calendar)
+            calendar.add(Calendar.MONTH, 1)
         }
     }
 
