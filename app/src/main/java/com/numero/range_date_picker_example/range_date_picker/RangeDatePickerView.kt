@@ -6,7 +6,6 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
 import com.numero.range_date_picker_example.R
-import com.numero.range_date_picker_example.extension.format
 import com.numero.range_date_picker_example.range_date_picker.model.Day
 import com.numero.range_date_picker_example.range_date_picker.model.Month
 import com.numero.range_date_picker_example.range_date_picker.model.RangeState
@@ -20,7 +19,6 @@ class RangeDatePickerView @JvmOverloads constructor(context: Context, attrs: Att
 
     init {
         View.inflate(context, R.layout.view_range_date_picker, this)
-        val current = Calendar.getInstance()
 
         val calendar = Calendar.getInstance().apply {
             add(Calendar.YEAR, 1)
@@ -49,8 +47,7 @@ class RangeDatePickerView @JvmOverloads constructor(context: Context, attrs: Att
                         || calendar.get(Calendar.YEAR) < maxYear) // Up to the year.
                 && calendar.get(Calendar.YEAR) < maxYear + 1) { // But not > next yr.
             val date = calendar.time
-            val month = Month(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
-                    date, calendar.format("YYYY/MM"))
+            val month = Month(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), date)
             monthMap[month] = getMonthCells(month, calendar)
             calendar.add(Calendar.MONTH, 1)
         }

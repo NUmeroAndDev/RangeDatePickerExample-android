@@ -5,5 +5,4 @@ import java.util.*
 data class Month(
         val year: Int,
         val month: Int,
-        val date: Date,
-        var label: String)
+        val date: Date)

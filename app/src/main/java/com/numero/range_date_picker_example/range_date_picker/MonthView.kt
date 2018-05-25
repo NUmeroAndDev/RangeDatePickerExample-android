@@ -6,9 +6,11 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import com.numero.range_date_picker_example.R
+import com.numero.range_date_picker_example.extension.format
 import com.numero.range_date_picker_example.range_date_picker.model.Day
 import com.numero.range_date_picker_example.range_date_picker.model.Month
 import kotlinx.android.synthetic.main.view_month.view.*
+import java.util.*
 
 class MonthView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr) {
 
@@ -17,7 +19,9 @@ class MonthView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     }
 
     fun setup(month: Month, dayList: List<List<Day>>) {
-        monthLabelTextView.text = month.label
+        monthLabelTextView.text = Calendar.getInstance().apply {
+            time = month.date
+        }.format("YYYY/MM")
 
         val numRows = dayList.size
         for (i in 0 until WEEK_COUNT) {
