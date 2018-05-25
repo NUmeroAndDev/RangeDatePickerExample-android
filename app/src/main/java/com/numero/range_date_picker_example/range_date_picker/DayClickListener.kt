@@ -5,7 +5,7 @@ import com.numero.range_date_picker_example.range_date_picker.`interface`.OnDayC
 import com.numero.range_date_picker_example.range_date_picker.model.Day
 import java.util.*
 
-class DayClickListener(private var minDate: Calendar, private var maxDate: Calendar, private val listener: ((date: Calendar, day: Day) -> Unit)) : OnDayClickListener {
+class DayClickListener(private var minDate: Calendar, private var maxDate: Calendar, private val listener: ((day: Day) -> Unit)) : OnDayClickListener {
 
     fun updateRange(minDate: Calendar, maxDate: Calendar) {
         this.minDate = minDate
@@ -17,7 +17,7 @@ class DayClickListener(private var minDate: Calendar, private var maxDate: Calen
             time = day.date
         }
         if (clickedDate.checkInRange(minDate, maxDate)) {
-            listener.invoke(clickedDate, day)
+            listener.invoke(day)
         }
     }
 
