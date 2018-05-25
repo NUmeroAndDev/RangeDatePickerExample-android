@@ -21,7 +21,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.action_settings -> true
+            R.id.action_settings -> {
+                RangeDatePickerDialogFragment.newInstance().show(supportFragmentManager, "")
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }

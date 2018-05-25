@@ -11,7 +11,7 @@
     android:paddingBottom="8dp"
     android:paddingTop="8dp"
     android:textColor="@color/day_text"
-    android:textSize="14sp"
+    android:textSize="16sp"
     android:textStyle="bold"
     android:theme="@style/Base.ThemeOverlay.AppCompat.Dark"
     tools:text="1" />
