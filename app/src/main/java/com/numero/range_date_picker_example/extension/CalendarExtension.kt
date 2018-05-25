@@ -26,5 +26,5 @@ fun Calendar.cutTime(): Calendar {
 }
 
 fun Calendar.format(format: String): String {
-    return SimpleDateFormat(format).format(time)
+    return SimpleDateFormat(format, Locale.US).format(time)
 }

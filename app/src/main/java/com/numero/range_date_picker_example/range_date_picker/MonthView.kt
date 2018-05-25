@@ -20,9 +20,12 @@ class MonthView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     }
 
     fun setup(month: Month, dayList: List<List<Day>>, listener: OnDayClickListener) {
-        monthLabelTextView.text = Calendar.getInstance().apply {
+        monthTextView.text = Calendar.getInstance().apply {
             time = month.date
-        }.format("YYYY/MM")
+        }.format("MMMM")
+        yearTextView.text = Calendar.getInstance().apply {
+            time = month.date
+        }.format("yyyy")
 
         val numRows = dayList.size
         for (i in 0 until WEEK_COUNT) {

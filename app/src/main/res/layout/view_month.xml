@@ -1,21 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/monthLabelTextView"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:padding="8dp"
-        android:text="Label"
-        android:textStyle="bold" />
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp">
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/monthTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#D9ffffff"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            tools:text="October" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/yearTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:textColor="#63ffffff"
+            android:textSize="12sp"
+            tools:text="2018" />
+
+    </FrameLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:layout_marginTop="4dp"
         android:orientation="horizontal">
 
         <TextView
@@ -23,49 +45,63 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="S" />
+            android:text="S"
+            android:textColor="@color/textSecondary"
+            android:textSize="12sp" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="M" />
+            android:text="M"
+            android:textColor="@color/textSecondary"
+            android:textSize="12sp" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="T" />
+            android:text="T"
+            android:textColor="@color/textSecondary"
+            android:textSize="12sp" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="W" />
+            android:text="W"
+            android:textColor="@color/textSecondary"
+            android:textSize="12sp" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="T" />
+            android:text="T"
+            android:textColor="@color/textSecondary"
+            android:textSize="12sp" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="F" />
+            android:text="F"
+            android:textColor="@color/textSecondary"
+            android:textSize="12sp" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="S" />
+            android:text="S"
+            android:textColor="@color/textSecondary"
+            android:textSize="12sp" />
 
     </LinearLayout>
 

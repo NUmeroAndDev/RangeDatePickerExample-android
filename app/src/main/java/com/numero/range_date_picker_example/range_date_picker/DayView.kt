@@ -1,7 +1,6 @@
 package com.numero.range_date_picker_example.range_date_picker
 
 import android.content.Context
-import android.graphics.Color
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
@@ -31,14 +30,15 @@ class DayView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
         } else {
             null
         }
+//        dayTextView.text = day.value.toString()
         dayTextView.isEnabled = day.isSelectable
         when (day.rangeState) {
-            RangeState.FIRST -> setBackgroundColor(Color.RED)
-            RangeState.LAST -> setBackgroundColor(Color.BLUE)
-            RangeState.MIDDLE -> setBackgroundColor(Color.YELLOW)
+            RangeState.FIRST -> setBackgroundResource(R.drawable.range_select_start)
+            RangeState.LAST -> setBackgroundResource(R.drawable.range_select_last)
+            RangeState.MIDDLE -> setBackgroundResource(R.drawable.range_select_middle)
             else -> {
                 if (day.isSelected) {
-                    setBackgroundColor(Color.RED)
+                    setBackgroundResource(R.drawable.range_select_first)
                 } else {
                     background = null
                 }
