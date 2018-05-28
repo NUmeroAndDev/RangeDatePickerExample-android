@@ -33,6 +33,6 @@ class WeekView @JvmOverloads constructor(context: Context, attrs: AttributeSet? 
     }
 
     companion object {
-        private const val WEEK_HAS_DAY_COUNT = 7
+        const val WEEK_HAS_DAY_COUNT = 7
     }
 }

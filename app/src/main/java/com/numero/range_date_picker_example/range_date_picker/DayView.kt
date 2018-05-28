@@ -25,12 +25,12 @@ class DayView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
 
     fun setupDay(day: Day) {
         this.day = day
-        dayTextView.text = if (day.isSelectable) {
-            day.value.toString()
-        } else {
-            null
-        }
-//        dayTextView.text = day.value.toString()
+//        dayTextView.text = if (day.isSelectable) {
+//            day.value.toString()
+//        } else {
+//            null
+//        }
+        dayTextView.text = day.day.toString()
         dayTextView.isEnabled = day.isSelectable
         when (day.rangeState) {
             RangeState.FIRST -> setBackgroundResource(R.drawable.range_select_start)

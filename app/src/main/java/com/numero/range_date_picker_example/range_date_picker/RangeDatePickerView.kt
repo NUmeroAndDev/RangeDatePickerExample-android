@@ -6,10 +6,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
 import com.numero.range_date_picker_example.R
-import com.numero.range_date_picker_example.extension.checkInRange
-import com.numero.range_date_picker_example.extension.cutTime
-import com.numero.range_date_picker_example.extension.isFirstDay
-import com.numero.range_date_picker_example.extension.isLastDay
+import com.numero.range_date_picker_example.extension.*
 import com.numero.range_date_picker_example.range_date_picker.model.Day
 import com.numero.range_date_picker_example.range_date_picker.model.Month
 import com.numero.range_date_picker_example.range_date_picker.model.RangeState
@@ -38,19 +35,32 @@ class RangeDatePickerView @JvmOverloads constructor(context: Context, attrs: Att
     init {
         View.inflate(context, R.layout.view_range_date_picker, this)
 
-        maxDate = Calendar.getInstance().cutTime().apply {
-            add(Calendar.YEAR, 1)
-            add(Calendar.MONTH, 1)
-        }
-        onDayClickListener.updateRange(minDate, maxDate)
-        createMonthList()
-
         monthAdapter = MonthAdapter(monthMap, onDayClickListener)
 
         monthRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = monthAdapter
         }
+    }
+
+    /**
+     * @param minDate 開始日
+     * @param maxDate 終了日
+     * @param firstSelectedDate 初期選択
+     * @param lastSelectedDate 初期選択
+     */
+    fun setup(minDate: Calendar, maxDate: Calendar, firstSelectedDate: Calendar? = null, lastSelectedDate: Calendar? = null) {
+        this.minDate = minDate
+        this.maxDate = maxDate
+
+        //初期選択
+        if (firstSelectedDate != null && lastSelectedDate != null) {
+            selectedCalendarList.add(firstSelectedDate.cutTime())
+            selectedCalendarList.add(lastSelectedDate.cutTime())
+        }
+
+        onDayClickListener.updateRange(minDate, maxDate)
+        createMonthList()
     }
 
     private fun createMonthList() {
@@ -62,9 +72,7 @@ class RangeDatePickerView @JvmOverloads constructor(context: Context, attrs: Att
 
         val maxYear = maxDate.get(Calendar.YEAR)
         val maxMonth = maxDate.get(Calendar.MONTH)
-        while ((calendar.get(Calendar.MONTH) <= maxMonth // Up to, including the month.
-                        || calendar.get(Calendar.YEAR) < maxYear) // Up to the year.
-                && calendar.get(Calendar.YEAR) < maxYear + 1) { // But not > next yr.
+        while ((calendar.get(Calendar.MONTH) <= maxMonth || calendar.get(Calendar.YEAR) < maxYear) && calendar.get(Calendar.YEAR) < maxYear + 1) {
             val date = calendar.time
             val month = Month(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), date)
             monthMap[month] = getMonthCells(month, calendar)
@@ -75,10 +83,9 @@ class RangeDatePickerView @JvmOverloads constructor(context: Context, attrs: Att
     private fun getMonthCells(month: Month, startCal: Calendar): List<List<Day>> {
         val baseCalendar = Calendar.getInstance().apply {
             time = startCal.time
-            cutTime()
+            set(Calendar.DAY_OF_MONTH, 1)
         }
-        val cells = mutableListOf<List<Day>>()
-        baseCalendar.set(Calendar.DAY_OF_MONTH, 1)
+
         val firstDayOfWeek = baseCalendar.get(Calendar.DAY_OF_WEEK)
         var offset = baseCalendar.firstDayOfWeek - firstDayOfWeek
         if (offset > 0) {
@@ -87,45 +94,58 @@ class RangeDatePickerView @JvmOverloads constructor(context: Context, attrs: Att
         baseCalendar.add(Calendar.DATE, offset)
 
         val minSelectedCal = if (selectedCalendarList.isNotEmpty()) {
-            selectedCalendarList[0]
+            selectedCalendarList.first()
         } else {
             null
         }
         val maxSelectedCal = if (selectedCalendarList.isNotEmpty()) {
-            selectedCalendarList[selectedCalendarList.size - 1]
+            selectedCalendarList.last()
         } else {
             null
         }
 
-        while ((baseCalendar.get(Calendar.MONTH) < month.month + 1 || baseCalendar.get(Calendar.YEAR) < month.year)
-                && baseCalendar.get(Calendar.YEAR) <= month.year) {
-            val weekCells = mutableListOf<Day>()
-            cells.add(weekCells)
-            for (c in 0..6) {
+        val weekList = mutableListOf<List<Day>>()
+        while ((baseCalendar.get(Calendar.MONTH) < month.month + 1 || baseCalendar.get(Calendar.YEAR) < month.year) && baseCalendar.get(Calendar.YEAR) <= month.year) {
+            val dayList = mutableListOf<Day>()
+            for (c in 0 until WeekView.WEEK_HAS_DAY_COUNT) {
                 val date = baseCalendar.time
+                val value = baseCalendar.get(Calendar.DAY_OF_MONTH)
                 val isCurrentMonth = baseCalendar.get(Calendar.MONTH) == month.month
                 val isSelected = false
                 val isSelectable = isCurrentMonth && baseCalendar.checkInRange(minDate, maxDate)
                 val isToday = false
-                val isHighlighted = false
-                val value = baseCalendar.get(Calendar.DAY_OF_MONTH)
 
-                var rangeState = RangeState.NONE
-//                if (selectedCalendarList.size > 1) {
-//                    if (cal.sameDate(minSelectedCal!!)) {
-//                        rangeState = RangeState.FIRST
-//                    } else if (cal.sameDate(maxSelectedCal!!)) {
-//                        rangeState = RangeState.LAST
-//                    } else if (cal.checkInRange(minSelectedCal, maxSelectedCal)) {
-//                        rangeState = RangeState.MIDDLE
-//                    }
-//                }
+                val day = Day(date, value, isCurrentMonth, isSelectable, isSelected, isToday, RangeState.NONE)
+                // 初期選択処理
+                if (minSelectedCal != null && maxSelectedCal != null && isSelectable && baseCalendar.checkInRange(minSelectedCal, maxSelectedCal)) {
+                    day.rangeState = when {
+                        baseCalendar.sameDate(minSelectedCal) -> {
+                            if (minSelectedCal.isLastDay()) {
+                                RangeState.FIRST_AND_LAST
+                            } else {
+                                RangeState.FIRST
+                            }
+                        }
+                        baseCalendar.sameDate(maxSelectedCal) -> {
+                            if (maxSelectedCal.isFirstDay()) {
+                                RangeState.FIRST_AND_LAST
+                            } else {
+                                RangeState.LAST
+                            }
+                        }
+                        baseCalendar.isLastDay() -> RangeState.LAST
+                        baseCalendar.isFirstDay() -> RangeState.FIRST
+                        else -> RangeState.MIDDLE
+                    }
+                    selectedDayList.add(day)
+                }
 
-                weekCells.add(Day(date, isCurrentMonth, isSelectable, isSelected, isToday, isHighlighted, value, rangeState))
+                dayList.add(day)
                 baseCalendar.add(Calendar.DATE, 1)
             }
+            weekList.add(dayList)
         }
-        return cells
+        return weekList
     }
 
     private fun doSelectDate(selectedDay: Day) {
@@ -140,46 +160,45 @@ class RangeDatePickerView @JvmOverloads constructor(context: Context, attrs: Att
 
         if (selectedCalendarList.size > 1) {
             clearOldSelections()
-        } else if (selectedCalendarList.size == 1 && newlySelectedCal.before(selectedCalendarList[0])) {
+        } else if (selectedCalendarList.size == 1 && newlySelectedCal.before(selectedCalendarList.first())) {
             clearOldSelections()
         }
 
-        if (selectedDayList.size == 0 || selectedDayList[0] != selectedDay) {
+        if (selectedDayList.size == 0 || selectedDayList.first() != selectedDay) {
             selectedDayList.add(selectedDay)
             selectedDay.isSelected = true
         }
         selectedCalendarList.add(newlySelectedCal)
 
         if (selectedDayList.size > 1) {
-            // Select all days in between start and end.
             val start = Calendar.getInstance().apply {
-                time = selectedDayList[0].date
+                time = selectedDayList.first().date
                 cutTime()
             }
             val end = Calendar.getInstance().apply {
-                time = selectedDayList[1].date
+                time = selectedDayList.last().date
                 cutTime()
             }
             // 最初が月の最後の場合、丸アイコンにする
-            selectedDayList[0].rangeState = when {
+            selectedDayList.first().rangeState = when {
                 start.isLastDay() -> RangeState.FIRST_AND_LAST
                 else -> RangeState.FIRST
             }
             // 最後が月の最初の場合、丸アイコンにする
-            selectedDayList[1].rangeState = when {
+            selectedDayList.last().rangeState = when {
                 end.isFirstDay() -> RangeState.FIRST_AND_LAST
                 else -> RangeState.LAST
             }
 
             val startMonthIndex = monthMap.keys.indexOfFirst {
                 val c = Calendar.getInstance().apply {
-                    time = selectedCalendarList[0].time
+                    time = selectedCalendarList.first().time
                 }
                 it.year == c.get(Calendar.YEAR) && it.month == c.get(Calendar.MONTH)
             }
             val endMonthIndex = monthMap.keys.indexOfFirst {
                 val c = Calendar.getInstance().apply {
-                    time = selectedCalendarList[1].time
+                    time = selectedCalendarList.last().time
                 }
                 it.year == c.get(Calendar.YEAR) && it.month == c.get(Calendar.MONTH)
             }
