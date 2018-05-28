@@ -5,6 +5,7 @@
     android:background="@color/windowBackground">
 
     <com.numero.range_date_picker_example.range_date_picker.RangeDatePickerView
+        android:id="@+id/rangeDatePickerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

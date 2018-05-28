@@ -26,6 +26,7 @@ class RangeDatePickerView @JvmOverloads constructor(context: Context, attrs: Att
     private var maxDate: Calendar = Calendar.getInstance().cutTime().apply {
         add(Calendar.YEAR, 1)
     }
+    private var today: Calendar = Calendar.getInstance().cutTime()
 
     private val onDayClickListener: DayClickListener = DayClickListener(minDate, maxDate) {
         // 選択処理
@@ -50,8 +51,9 @@ class RangeDatePickerView @JvmOverloads constructor(context: Context, attrs: Att
      * @param lastSelectedDate 初期選択
      */
     fun setup(minDate: Calendar, maxDate: Calendar, firstSelectedDate: Calendar? = null, lastSelectedDate: Calendar? = null) {
-        this.minDate = minDate
-        this.maxDate = maxDate
+        this.minDate = minDate.cutTime()
+        this.maxDate = maxDate.cutTime()
+        today = Calendar.getInstance().cutTime()
 
         //初期選択
         if (firstSelectedDate != null && lastSelectedDate != null) {
@@ -75,12 +77,12 @@ class RangeDatePickerView @JvmOverloads constructor(context: Context, attrs: Att
         while ((calendar.get(Calendar.MONTH) <= maxMonth || calendar.get(Calendar.YEAR) < maxYear) && calendar.get(Calendar.YEAR) < maxYear + 1) {
             val date = calendar.time
             val month = Month(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), date)
-            monthMap[month] = getMonthCells(month, calendar)
+            monthMap[month] = createDayList(month, calendar)
             calendar.add(Calendar.MONTH, 1)
         }
     }
 
-    private fun getMonthCells(month: Month, startCal: Calendar): List<List<Day>> {
+    private fun createDayList(month: Month, startCal: Calendar): List<List<Day>> {
         val baseCalendar = Calendar.getInstance().apply {
             time = startCal.time
             set(Calendar.DAY_OF_MONTH, 1)
@@ -93,12 +95,12 @@ class RangeDatePickerView @JvmOverloads constructor(context: Context, attrs: Att
         }
         baseCalendar.add(Calendar.DATE, offset)
 
-        val minSelectedCal = if (selectedCalendarList.isNotEmpty()) {
+        val minSelectedDate = if (selectedCalendarList.isNotEmpty()) {
             selectedCalendarList.first()
         } else {
             null
         }
-        val maxSelectedCal = if (selectedCalendarList.isNotEmpty()) {
+        val maxSelectedDate = if (selectedCalendarList.isNotEmpty()) {
             selectedCalendarList.last()
         } else {
             null
@@ -113,21 +115,21 @@ class RangeDatePickerView @JvmOverloads constructor(context: Context, attrs: Att
                 val isCurrentMonth = baseCalendar.get(Calendar.MONTH) == month.month
                 val isSelected = false
                 val isSelectable = isCurrentMonth && baseCalendar.checkInRange(minDate, maxDate)
-                val isToday = false
+                val isToday = today.sameDay(baseCalendar) && isSelectable
 
-                val day = Day(date, value, isCurrentMonth, isSelectable, isSelected, isToday, RangeState.NONE)
+                val day = Day(date, value, isSelectable, isSelected, isToday, RangeState.NONE)
                 // 初期選択処理
-                if (minSelectedCal != null && maxSelectedCal != null && isSelectable && baseCalendar.checkInRange(minSelectedCal, maxSelectedCal)) {
+                if (minSelectedDate != null && maxSelectedDate != null && isSelectable && baseCalendar.checkInRange(minSelectedDate, maxSelectedDate)) {
                     day.rangeState = when {
-                        baseCalendar.sameDate(minSelectedCal) -> {
-                            if (minSelectedCal.isLastDay()) {
+                        baseCalendar.sameDay(minSelectedDate) -> {
+                            if (minSelectedDate.isLastDay()) {
                                 RangeState.FIRST_AND_LAST
                             } else {
                                 RangeState.FIRST
                             }
                         }
-                        baseCalendar.sameDate(maxSelectedCal) -> {
-                            if (maxSelectedCal.isFirstDay()) {
+                        baseCalendar.sameDay(maxSelectedDate) -> {
+                            if (maxSelectedDate.isFirstDay()) {
                                 RangeState.FIRST_AND_LAST
                             } else {
                                 RangeState.LAST

@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
-import com.numero.range_date_picker_example.extension.cutTime
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import java.util.*
@@ -17,14 +16,16 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
 
-        val minDate = Calendar.getInstance().cutTime()
-        val maxDate = Calendar.getInstance().cutTime().apply {
+        val minDate = Calendar.getInstance()
+        val maxDate = Calendar.getInstance().apply {
             add(Calendar.YEAR, 1)
             add(Calendar.MONTH, 1)
         }
-        monthView.setup(minDate, maxDate, Calendar.getInstance(), Calendar.getInstance().apply {
+        val start = Calendar.getInstance()
+        val end = Calendar.getInstance().apply {
             add(Calendar.DAY_OF_MONTH, 1)
-        })
+        }
+        monthView.setup(minDate, maxDate, start, end)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

@@ -5,7 +5,6 @@ import java.util.*
 data class Day(
         val date: Date,
         val day: Int,
-        val isCurrentMonth: Boolean,
         val isSelectable: Boolean,
         var isSelected: Boolean,
         val isToday: Boolean,

@@ -9,7 +9,7 @@ fun Calendar.checkInRange(minDate: Calendar?, maxDate: Calendar?): Boolean {
     return (before(minDate) || after(maxDate)).not()
 }
 
-fun Calendar.sameDate(calendar: Calendar): Boolean {
+fun Calendar.sameDay(calendar: Calendar): Boolean {
     val year = calendar.get(Calendar.YEAR)
     val month = calendar.get(Calendar.MONTH)
     val day = calendar.get(Calendar.DAY_OF_MONTH)
