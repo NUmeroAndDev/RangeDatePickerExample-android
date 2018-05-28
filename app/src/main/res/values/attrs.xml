@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="RangeDatePickerView">
+        <attr name="calendarType">
+            <enum name="SCROLL_VERTICAL" value="0" />
+            <enum name="PAGER" value="1" />
+        </attr>
+    </declare-styleable>
+</resources>

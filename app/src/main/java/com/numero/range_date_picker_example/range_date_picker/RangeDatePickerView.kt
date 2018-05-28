@@ -2,11 +2,14 @@ package com.numero.range_date_picker_example.range_date_picker
 
 import android.content.Context
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.PagerSnapHelper
 import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
+import androidx.core.content.withStyledAttributes
 import com.numero.range_date_picker_example.R
 import com.numero.range_date_picker_example.extension.*
+import com.numero.range_date_picker_example.range_date_picker.model.CalendarType
 import com.numero.range_date_picker_example.range_date_picker.model.Day
 import com.numero.range_date_picker_example.range_date_picker.model.Month
 import com.numero.range_date_picker_example.range_date_picker.model.RangeState
@@ -36,11 +39,26 @@ class RangeDatePickerView @JvmOverloads constructor(context: Context, attrs: Att
     init {
         View.inflate(context, R.layout.view_range_date_picker, this)
 
-        monthAdapter = MonthAdapter(monthMap, onDayClickListener)
+        var type = CalendarType.VERTICAL_SCROLL
+        context.withStyledAttributes(attrs, R.styleable.RangeDatePickerView) {
+            type = CalendarType.values()[getInt(R.styleable.RangeDatePickerView_calendarType, 0)]
+        }
+
+        val manager = when (type) {
+            CalendarType.PAGER -> LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            CalendarType.VERTICAL_SCROLL -> LinearLayoutManager(context)
+        }
+
+        monthAdapter = MonthAdapter(monthMap, type, onDayClickListener)
 
         monthRecyclerView.apply {
-            layoutManager = LinearLayoutManager(context)
+            layoutManager = manager
             adapter = monthAdapter
+        }
+
+        if (type == CalendarType.PAGER) {
+            val helper = PagerSnapHelper()
+            helper.attachToRecyclerView(monthRecyclerView)
         }
     }
 

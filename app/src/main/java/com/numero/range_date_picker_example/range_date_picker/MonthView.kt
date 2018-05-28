@@ -8,6 +8,7 @@ import android.widget.LinearLayout
 import com.numero.range_date_picker_example.R
 import com.numero.range_date_picker_example.extension.format
 import com.numero.range_date_picker_example.range_date_picker.`interface`.OnDayClickListener
+import com.numero.range_date_picker_example.range_date_picker.model.CalendarType
 import com.numero.range_date_picker_example.range_date_picker.model.Day
 import com.numero.range_date_picker_example.range_date_picker.model.Month
 import kotlinx.android.synthetic.main.view_month.view.*
@@ -19,7 +20,7 @@ class MonthView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         View.inflate(context, R.layout.view_month, this)
     }
 
-    fun setup(month: Month, dayList: List<List<Day>>, listener: OnDayClickListener) {
+    fun setup(month: Month, dayList: List<List<Day>>, type: CalendarType, listener: OnDayClickListener) {
         monthTextView.text = Calendar.getInstance().apply {
             time = month.date
         }.format("MMMM")
@@ -38,7 +39,10 @@ class MonthView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                     cellView.setupDay(day)
                 }
             } else {
-                weekView.visibility = View.GONE
+                weekView.visibility = when (type) {
+                    CalendarType.VERTICAL_SCROLL -> View.GONE
+                    CalendarType.PAGER -> View.INVISIBLE
+                }
             }
         }
     }
