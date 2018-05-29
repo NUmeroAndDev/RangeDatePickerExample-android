@@ -53,6 +53,7 @@ class RangeDatePickerView @JvmOverloads constructor(context: Context, attrs: Att
 
         monthRecyclerView.apply {
             layoutManager = manager
+            addItemDecoration(StickyHeaderItemDecoration(monthAdapter))
             adapter = monthAdapter
         }
 
