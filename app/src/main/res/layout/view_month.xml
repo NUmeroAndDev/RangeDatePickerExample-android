@@ -1,37 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp">
-
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/monthTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#D9ffffff"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            tools:text="October" />
-
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/yearTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:textColor="#63ffffff"
-            android:textSize="12sp"
-            tools:text="2018" />
-
-    </FrameLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
