@@ -3,13 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/windowBackground"
-    android:padding="16dp">
+    android:background="@color/windowBackground">
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/monthTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingBottom="12dp"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp"
+        android:paddingTop="12dp"
         android:textColor="#D9ffffff"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -20,8 +23,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
+        android:paddingBottom="12dp"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp"
+        android:paddingTop="12dp"
         android:textColor="#63ffffff"
         android:textSize="12sp"
         tools:text="2018" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_gravity="bottom"
+        android:background="#63ffffff" />
 
 </FrameLayout>
