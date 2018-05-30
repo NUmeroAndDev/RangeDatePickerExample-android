@@ -23,19 +23,15 @@ class StickyHeaderItemDecoration(private var stickyHeader: IStickyHeader) : Recy
             return
         }
 
-        val currentHeader = getHeaderViewForItem(topChildPosition, parent)
-        fixLayoutSize(parent, currentHeader)
-        val contactPoint = currentHeader.bottom
+        for (i in 0 until parent.childCount) {
+            val child = parent.getChildAt(i)
+            val position = parent.getChildAdapterPosition(child)
+            if (position % 2 == 0) continue
+            val currentHeader = getHeaderViewForItem(position, parent)
+            fixLayoutSize(parent, currentHeader)
 
-        val childInContact = getChildInContact(parent, contactPoint) ?: return
-        if (stickyHeader.isHeader(parent.getChildAdapterPosition(childInContact))) {
-            // 既存のHeaderを押し上げる
-            moveHeader(c, currentHeader, childInContact)
-            return
+            moveHeader(c, currentHeader, child)
         }
-
-        // Headerの描画
-        drawHeader(c, currentHeader)
     }
 
     private fun getHeaderViewForItem(itemPosition: Int, parent: RecyclerView): View {
@@ -47,34 +43,13 @@ class StickyHeaderItemDecoration(private var stickyHeader: IStickyHeader) : Recy
         return header
     }
 
-    private fun drawHeader(c: Canvas, header: View) {
-        c.apply {
-            save()
-            translate(0F, 0F)
-            header.draw(this)
-            restore()
-        }
-    }
-
     private fun moveHeader(c: Canvas, currentHeader: View, nextHeader: View) {
         c.apply {
             save()
-            translate(0F, (nextHeader.top - currentHeader.height).toFloat())
+            translate(0F, Math.max(0F, (nextHeader.top - currentHeader.height).toFloat()))
             currentHeader.draw(this)
             restore()
         }
-    }
-
-    private fun getChildInContact(parent: RecyclerView, contactPoint: Int): View? {
-        for (i in 0 until parent.childCount) {
-            val child = parent.getChildAt(i)
-            if (child.bottom > contactPoint) {
-                if (child.top <= contactPoint) {
-                    return child
-                }
-            }
-        }
-        return null
     }
 
     private fun fixLayoutSize(parent: ViewGroup, view: View) {
