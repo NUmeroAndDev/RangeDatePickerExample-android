@@ -19,7 +19,7 @@ class MonthView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     fun setup(dayList: List<List<Day>>, type: CalendarType, listener: OnDayClickListener) {
         val numRows = dayList.size
         for (i in 0 until WEEK_COUNT) {
-            val weekView = getWeekView(i + 1)
+            val weekView = getWeekView(i)
             weekView.setOnDayClickListener(listener)
             if (i < numRows) {
                 weekView.visibility = View.VISIBLE
